@@ -1,7 +1,8 @@
-package config
+package config_test
 
 import (
 	"io"
+	"qiita/config"
 	"strings"
 	"testing"
 
@@ -15,7 +16,7 @@ func TestGetConfig(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    *ServerConfig
+		want    *config.ServerConfig
 		wantErr bool
 	}{
 		{
@@ -23,7 +24,7 @@ func TestGetConfig(t *testing.T) {
 			args: args{
 				reader: strings.NewReader(`{"port":"8080"}`),
 			},
-			want: &ServerConfig{
+			want: &config.ServerConfig{
 				Port: "8080",
 			},
 			wantErr: false,
@@ -39,7 +40,7 @@ func TestGetConfig(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := GetConfig(tt.args.reader)
+			got, err := config.GetConfig(tt.args.reader)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetConfig() error = %v, wantErr %v", err, tt.wantErr)
 				return
