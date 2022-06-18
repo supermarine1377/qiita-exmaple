@@ -1,10 +1,17 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
 	"qiita/config"
+	"qiita/server"
 )
+
+type Server struct {
+	Conf Config
+}
+
+type Config interface {
+	GetPort() string
+}
 
 func main() {
 	var file, err = config.GetConfigFile()
@@ -15,8 +22,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	http.HandleFunc("/qiita", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "hello, world!")
-	})
-	http.ListenAndServe(":"+conf.Port, nil)
+	var server = server.NewServer(conf)
+	server.Serve()
 }
