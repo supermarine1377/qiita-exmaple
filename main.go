@@ -1,12 +1,13 @@
 package main
 
 import (
+	"fmt"
+	"net/http"
 	"qiita/config"
-	"qiita/server"
 )
 
 type Server struct {
-	Conf Config
+	conf Config
 }
 
 type Config interface {
@@ -22,6 +23,17 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	var server = server.NewServer(conf)
-	server.Serve()
+	var server = newServer(conf)
+	server.serve()
+}
+
+func newServer(conf Config) *Server {
+	return &Server{conf: conf}
+}
+
+func (s *Server) serve() {
+	http.HandleFunc("/qiita", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, "hello, world!")
+	})
+	http.ListenAndServe(":"+s.conf.GetPort(), nil)
 }
